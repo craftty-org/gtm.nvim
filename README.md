@@ -5,7 +5,7 @@
 
 ![](./image.png)
 
-`gtm.nvim` is a (thin) client for [gtm(d)](https://github.com/prjctimg/gtm) that
+`gtm.nvim` is a (thin) client for [gtm(d)](https://github.com/craftty-org/gtm) that
 brings playback control, statusline integration and reactive theming inside
 Neovim.
 
@@ -26,7 +26,7 @@ See [CONTRIBUTING.md](CONTRIBUTING.md)
 
 <!-- CONTRIBUTORS -->
 <p align="left">
-  <a href="https://github.com/iseeheaven"><img src="https://github.com/iseeheaven.png?size=80" width="50" height="50" style="border-radius:50%;margin:4px;" alt="iseeheaven"/></a> <a href="https://github.com/prjctimg"><img src="https://github.com/prjctimg.png?size=80" width="50" height="50" style="border-radius:50%;margin:4px;" alt="prjctimg"/></a>
+  <a href="https://github.com/prjctimg"><img src="https://github.com/prjctimg.png?size=80" width="50" height="50" style="border-radius:50%;margin:4px;" alt="prjctimg"/></a>
 </p>
 <!-- /CONTRIBUTORS -->
 
