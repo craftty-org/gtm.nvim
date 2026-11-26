@@ -22,10 +22,10 @@ gtm.nvim is four things: playback control, a statusline, native pickers over the
 queue and library, and reactive theming driven by the album art gtmd already
 extracted. It opens no windows of its own; every picker is `vim.ui.select`.
 
-Requires Neovim 0.11+ and a running `gtmd` (https://github.com/prjctimg/gtm).
+Requires Neovim 0.11+ and a running `gtmd` (https://github.com/craftty-org/gtm).
 
 lazy.nvim: >
-  { "prjctimg/gtm.nvim", opts = {} }
+  { "craftty-org/gtm.nvim", opts = {} }
 <
 Manual: >
   require("gtm").setup({})
@@ -74,11 +74,12 @@ empty state is just `⏹` rather than a row of zeroes.
 Source icons ~
 `statusline.source` shows a marker for where the audio came from, using Nerd
 Font codepoints from Material Design Icons: >
-  spotify = md-spotify      U+F04C7
-  radio   = md-radio        U+F0439
-  podcast = md-podcast      U+F0994
-  local   = md-folder_music U+F1359
-  chart   = md-chart_line   U+F012A
+  spotify  = md-spotify      U+F04C7
+  radio    = md-radio        U+F0439
+  podcast  = md-podcast      U+F0994
+  local    = md-folder_music U+F1359
+  chart    = md-chart_line   U+F012A
+  provider = md-music_note   U+F001
 <
 A source your gtmd does not name renders nothing rather than guessing.
 
@@ -87,7 +88,7 @@ boxes. Paste the plain-Unicode set into `statusline.icons` to replace them — i
 needs no patched font: >
   icons = {
     spotify = "◉", radio = "☁", podcast = "❋",
-    local = "♫", chart = "▤",
+    local = "♫", chart = "▤", provider = "♪",
   },
 <
 Override only the ones you like; the rest keep their defaults.

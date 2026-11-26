@@ -67,10 +67,9 @@ do
 
 	local MAX_LINE = 1024 * 1024
 	local RETRY_MAX_DELAY = 10000
-	local MAX_ATTEMPTS = 30 -- this may change,may rely on.
 
 	local id, buf, pending = 0, "", {}
-	local retry_timer, delay, attempts = nil, 500, 0
+	local retry_timer, delay = nil, 500
 	local base_pos, base_time, duration, updated = 0, 0, 0, 0
 	local on_connected = nil
 
@@ -113,9 +112,9 @@ do
 		if uv.fs_stat(ipc.path) then
 			ipc._open()
 		else
-			-- Start the daemon yourself: a plugin silently spawning a server process
-			-- is not its call to make, and there is nothing to reconnect to anyway.
-			notify("gtmd is not running (no socket at " .. ipc.path .. ")", vim.log.levels.WARN)
+			-- No socket yet: gtmd may come up later, and the retry loop is how we
+			-- notice. Spawning the daemon is not the plugin's job.
+			ipc._retry()
 		end
 	end
 
@@ -158,7 +157,7 @@ do
 				return
 			end
 			ipc.connected = true
-			delay, attempts = 500, 0
+			delay = 500
 			ipc._read(sock)
 			-- Prime on (re)connect so the statusline is right even when nothing has
 			-- been played yet — a daemon sitting paused on a radio stream.
@@ -176,7 +175,6 @@ do
 	--- Exponential backoff, capped, and never more than one timer in flight. It
 	--- never gives up: gtmd may come back at any time, and a plugin that stops
 	--- trying is a plugin that silently stays stale for the rest of the session.
-	--- `MAX_ATTEMPTS` only decides when to warn once that the wait has got long.
 	function ipc._retry()
 		ipc.connected = false
 		if retry_timer or not ipc.path then
@@ -185,10 +183,6 @@ do
 		retry_timer = uv.new_timer()
 		retry_timer:start(delay, 0, function()
 			retry_timer = close_timer(retry_timer)
-			attempts = attempts + 1
-			if attempts == MAX_ATTEMPTS then
-				notify("still reconnecting to gtmd; it may not be running", vim.log.levels.WARN)
-			end
 			delay = math.min(delay * 2, RETRY_MAX_DELAY)
 			ipc._open()
 		end)
@@ -294,10 +288,14 @@ do
 		end
 		ipc.status.status = next_status
 		ipc.status.time_pos, ipc.status.duration = base_pos, duration
+		if type(ev.source) == "string" then
+			ipc.status.source = ev.source
+		end
 		if ev.track then
 			ipc.status.current_track = ev.track
 		elseif ev.event == "playback_stopped" then
 			ipc.status.current_track = nil
+			ipc.status.source = nil
 		end
 	end
 
@@ -794,7 +792,7 @@ do
 	-- Field names per event, in variant declaration order. Tags not listed here
 	-- carry no fields. Everything absent from WANTED is TUI-only or telemetry.
 	local EVENT_FIELDS = {
-		playback_started = { "track", "auto_advanced", "time_pos", "duration" },
+		playback_started = { "track", "auto_advanced", "time_pos", "duration", "source" },
 		playback_paused = { "time_pos" },
 		volume_changed = { "volume" },
 		shuffle_changed = { "enabled" },
@@ -1334,7 +1332,7 @@ do
 		H.start("gtm: requirements")
 		local has_daemon = vim.fn.executable("gtmd") == 1
 		local found = "gtmd on $PATH (" .. vim.fn.exepath("gtmd") .. ")"
-		check(has_daemon, found, "gtmd is not on $PATH - install it from github.com/prjctimg/gtm", "error")
+		check(has_daemon, found, "gtmd is not on $PATH - install it from github.com/craftty-org/gtm", "error")
 	end
 
 	local function daemon()
@@ -1416,6 +1414,7 @@ local defaults = {
 			podcast = "\xf3\xb0\xa6\x94", -- md-podcast      U+F0994
 			["local"] = "\xf3\xb1\x8d\x99", -- md-folder_music U+F1359
 			chart = "\xf3\xb0\x84\xaa", -- md-chart_line   U+F012A
+			provider = "\xef\x80\x81", -- md-music_note   U+F001
 		},
 	},
 	-- `intensity` is how far each background is washed toward the album accent;

@@ -309,6 +309,7 @@ local EXPECT = {
 	podcast = "\xf3\xb0\xa6\x94", -- md-podcast      U+F0994
 	["local"] = "\xf3\xb1\x8d\x99", -- md-folder_music U+F1359
 	chart = "\xf3\xb0\x84\xaa", -- md-chart_line   U+F012A
+	provider = "\xef\x80\x81", -- md-music_note   U+F001
 }
 local wrong = {}
 for src, want in pairs(EXPECT) do
@@ -329,6 +330,34 @@ check("icons are overridable", gtm.statusline() == "R ▶", vim.inspect(gtm.stat
 gtm.opts.statusline = vim.deepcopy(defaults_statusline)
 ipc.status.source = nil
 check("no source field renders nothing", gtm.statusline() == "▶", vim.inspect(gtm.statusline()))
+
+if push.client then
+	local prev = vim.deepcopy(ipc.status)
+	local track = { 1, "/music/xtal.flac", "Xtal", "Aphex Twin", "SAW", 200, "", false }
+	local payload = vim.mpack.encode({ { "playback_started", track, false, 5.0, 200.0, "spotify" } })
+	push.client:write(be32(#payload) .. payload)
+	vim.wait(1000, function()
+		return ipc.status and ipc.status.source == "spotify"
+	end, 20)
+	check("playback_started sets source", ipc.status and ipc.status.source == "spotify", vim.inspect(ipc.status and ipc.status.source))
+	check(
+		"playback_started source appears in statusline",
+		gtm.statusline():find(EXPECT.spotify, 1, true) ~= nil,
+		vim.inspect(gtm.statusline())
+	)
+
+	local stopped = vim.mpack.encode({ { "playback_stopped" } })
+	push.client:write(be32(#stopped) .. stopped)
+	vim.wait(1000, function()
+		return ipc.status and ipc.status.status == "stopped" and ipc.status.source == nil
+	end, 20)
+	check(
+		"playback_stopped clears source",
+		ipc.status and ipc.status.status == "stopped" and ipc.status.source == nil,
+		vim.inspect({ status = ipc.status and ipc.status.status, source = ipc.status and ipc.status.source })
+	)
+	ipc.set_status(prev)
+end
 
 print("\n[browsing]")
 -- Every picker is `vim.ui.select`; the stock fallback calls `inputlist`, which

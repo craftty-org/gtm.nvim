@@ -96,7 +96,7 @@ Keep destructive queue actions behind explicit subcommands (`queue remove`,
 ## Colour ownership
 
 gtmd resolves the reactive colours, not the plugin: `REACTIVE_TOKENS.md` in the
-[gtm](https://github.com/prjctimg/gtm) repo defines a `reactive_theme` event
+[gtm](https://github.com/craftty-org/gtm) repo defines a `reactive_theme` event
 carrying a resolved role→colour set for both polarities, so this plugin, the TUI
 and future clients agree.
 

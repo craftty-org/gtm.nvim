@@ -4,7 +4,7 @@ Thanks for considering contributing to `gtm.nvim`. This is a friendly, hobby
 project: feedback and bug reports are welcome. The project is still young, so PRs
 are restricted for now — they will be unlocked after the first major (`v1`).
 
-The companion project, [gtm](https://github.com/prjctimg/gtm), is the daemon and
+The companion project, [gtm](https://github.com/craftty-org/gtm), is the daemon and
 TUI this plugin talks to. If you are looking for the player itself, start there.
 
 ## Scope
@@ -22,7 +22,7 @@ TUI this plugin talks to. If you are looking for the player itself, start there.
   on by default.
 
 Colours come from the daemon: `REACTIVE_TOKENS.md` in the
-[gtm](https://github.com/prjctimg/gtm) repo defines the `reactive_theme` event.
+[gtm](https://github.com/craftty-org/gtm) repo defines the `reactive_theme` event.
 **The theme section contains no colour maths** — it picks a polarity and maps
 roles onto highlight groups. Do not add a derivation; two of them is how two
 clients end up rendering the same track differently. A gtmd without role sets
@@ -38,11 +38,11 @@ upstream should be fixed upstream.
 
 There is nothing to build. The plugin loads straight into Neovim.
 
-You need `gtmd` running — see [gtm's install instructions](https://github.com/prjctimg/gtm).
+You need `gtmd` running — see [gtm's install instructions](https://github.com/craftty-org/gtm).
 `gtm.nvim` does not start the daemon for you.
 
 ```lua
-{ "prjctimg/gtm.nvim", opts = {} }
+{ "craftty-org/gtm.nvim", opts = {} }
 ```
 
 Check the wiring end to end:

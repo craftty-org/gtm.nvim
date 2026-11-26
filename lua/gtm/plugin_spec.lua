@@ -9,7 +9,7 @@
 -- This is free software released under the GPL-3.0 license.
 
 return {
-	"prjctimg/gtm.nvim",
+	"craftty-org/gtm.nvim",
 	event = "VeryLazy",
 	cmd = "Gtm",
 	opts = {},

@@ -63,7 +63,7 @@ This is free software released under the GPL-3.0 license.
   is worse than no ramp. `:checkhealth gtm` reports which source is live.
 
   This is the client half of `REACTIVE_TOKENS.md` in the
-  [gtm repo](https://github.com/prjctimg/gtm). There is no local role
+  [gtm repo](https://github.com/craftty-org/gtm). There is no local role
   derivation: against a gtmd that predates role sets the editor stays untinted.
 
 - `theme.intensity` (default `0.34`) tunes the background wash: each background
