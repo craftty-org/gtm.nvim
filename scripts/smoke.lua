@@ -339,7 +339,11 @@ if push.client then
 	vim.wait(1000, function()
 		return ipc.status and ipc.status.source == "spotify"
 	end, 20)
-	check("playback_started sets source", ipc.status and ipc.status.source == "spotify", vim.inspect(ipc.status and ipc.status.source))
+	check(
+		"playback_started sets source",
+		ipc.status and ipc.status.source == "spotify",
+		vim.inspect(ipc.status and ipc.status.source)
+	)
 	check(
 		"playback_started source appears in statusline",
 		gtm.statusline():find(EXPECT.spotify, 1, true) ~= nil,
